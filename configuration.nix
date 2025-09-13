@@ -42,9 +42,10 @@ in
   # You can disable this if you're only using the Wayland session.
   services.xserver.enable = true;
 
-  # Enable the KDE Plasma Desktop Environment.
+  # SDDM for login
   services.displayManager.sddm.enable = true;
-  services.desktopManager.plasma6.enable = true;
+  services.displayManager.sddm.theme = "sddm-theme-dialog";
+  # services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
   services.xserver.xkb = {
@@ -177,9 +178,9 @@ in
             # No clue what this does
             ", Print, exec, grimblast copy area"
 
-            ", XF86AudioRaiseVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ +5%"
-            ", XF86AudioLowerVolume, exec, pactl set-sink-volume @DEFAULT_SINK@ -5%"
-            ", XF86AudioMute, exec, pactl set-sink-mute @DEFAULT_SINK@ toggle"
+            ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%+"
+            ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_SINK@ 5%-"
+            ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_SINK@ toggle"
 
             # Hopping between windows
             "$mod, H, movefocus, l"
@@ -281,6 +282,12 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     kitty
+
+    # SDDM theme stuff
+    qt5.qtgraphicaleffects
+    qt5.qtquickcontrols
+    qt5.qtquickcontrols2
+    (callPackage ./sddm-theme-dialog.nix {}).sddm-theme-dialog
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
