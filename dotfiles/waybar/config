@@ -1,0 +1,13 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 24,
+  "modules-left": ["hyprland/workspaces"],
+  "modules-center": ["clock"],
+  "modules-right": ["battery", "network", "pulseaudio"],
+  "hyprland/workspaces": {
+    "format": "{icon}",
+    "on-scroll-up": "hyprctl dispatch workspace e+1",
+    "on-scroll-down": "hyprctl dispatch workspace e-1"
+  }
+}
