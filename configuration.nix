@@ -108,6 +108,8 @@ in
       libxkbcommon
       icu
       zlib
+      busybox
+      grimblast
 
       gcc
 
@@ -124,6 +126,10 @@ in
       go_1_23
       nodejs_24
       python314
+
+      nnn
+      mpv
+      tree
     ];
 
     home.pointerCursor = {
@@ -282,12 +288,17 @@ in
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     kitty
+    ffmpeg
 
     # SDDM theme stuff
     qt5.qtgraphicaleffects
     qt5.qtquickcontrols
     qt5.qtquickcontrols2
     (callPackage ./sddm-theme-dialog.nix {}).sddm-theme-dialog
+  ];
+
+  fonts.packages = with pkgs; [
+    google-fonts
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
