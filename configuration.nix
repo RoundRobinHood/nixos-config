@@ -300,6 +300,8 @@ in
     qt5.qtquickcontrols
     qt5.qtquickcontrols2
     (callPackage ./sddm-theme-dialog.nix {}).sddm-theme-dialog
+
+    (callPackage ./claude-code/claude-code.nix {})
   ];
 
   fonts.packages = with pkgs; [
