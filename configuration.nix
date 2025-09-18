@@ -91,7 +91,6 @@ in
     };
   };
 
-  programs.steam.enable = true;
   home-manager.backupFileExtension = "hm-bak2";
 
   home-manager.users.rrh = { pkgs, ... }: {
@@ -108,8 +107,6 @@ in
       libxkbcommon
       icu
       zlib
-      busybox
-      grimblast
 
       gcc
 
@@ -127,6 +124,10 @@ in
       nodejs_24
       python314
 
+      busybox
+      procps
+      grimblast
+      feh
       nnn
       mpv
       tree
@@ -180,6 +181,7 @@ in
             "$mod SHIFT, Q, closewindow, activewindow" # Win+Shift+Q closes the active window
             "$mod, D, exec, wofi --show drun" # Win+D opens app search
             "$mod, F1, exec, kitty -e nmtui" # Win+F1 opens Wi-Fi terminal
+            "$mod, E, exec, kitty -e nnn" # File explorer
 
             # No clue what this does
             ", Print, exec, grimblast copy area"
@@ -251,12 +253,15 @@ in
         dotnetCorePackages.sdk_9_0
       ];
     };
+
+    programs.tmux.enable = true;
     programs.bash.enable = true;
 
     home.file.".config/nvim/init.lua".source = ./dotfiles/nvim/init.lua;
     home.file.".config/nvim/lua".source = ./dotfiles/nvim/lua;
     home.file.".config/waybar".source = ./dotfiles/waybar;
     home.file.".config/mako".source = ./dotfiles/mako;
+    home.file.".config/tmux".source = ./dotfiles/tmux;
 
     programs.git = {
       enable = true;

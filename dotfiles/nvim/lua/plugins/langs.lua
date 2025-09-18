@@ -53,7 +53,6 @@ return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      local cnf = require('lspconfig')
       local caps = require("cmp_nvim_lsp").default_capabilities()
       local vtext = function(client, bufnr)
         vim.diagnostic.config({ virtual_text = true })
@@ -68,27 +67,32 @@ return {
       })
 
       -- Set up go
-      cnf.gopls.setup({
+      vim.lsp.enable('gopls')
+      vim.lsp.config('gopls', {
         on_attach = vtext,
       })
 
-      cnf.ts_ls.setup({
+      vim.lsp.enable('ts_ls')
+      vim.lsp.config('ts_ls', {
         capabilities = caps,
         on_attach = vtext,
       })
 
-      cnf.pyright.setup({
+      vim.lsp.enable('pyright')
+      vim.lsp.config('pyright', {
         capabilities = caps,
         on_attach = vtext,
       })
 
-      cnf.harper_ls.setup({
+      vim.lsp.enable('harper_ls')
+      vim.lsp.config('harper_ls', {
         capabilities = caps,
         on_attach = vtext,
         filetypes = { "markdown", "text", "plaintext" },
       })
 
-      cnf.emmet_ls.setup({
+      vim.lsp.enable('emmet_ls')
+      vim.lsp.config('emmet_ls', {
         capabilities = caps,
         on_attach = vtext,
         filetypes = { "html", "css", "ejs" },
@@ -101,28 +105,46 @@ return {
         }
       })
 
-      cnf.fsautocomplete.setup({
+      local function root_pattern(...)
+        local patterns = { ... }
+
+        return function(startpath)
+          local path = startpath or vim.api.nvim_buf_get_name(0)
+          if path == "" then
+            path = vim.loop.cwd()
+          end
+
+          -- Use vim.fs.find(Neovim 8.0+), searching upward
+          local found = vim.fs.find(patterns, { path = path, upward = true })
+          if #found > 0 then
+            return vim.fs.dirname(found[1])
+          end
+          return nil
+        end
+      end
+
+      vim.lsp.enable('fsautocomplete')
+      vim.lsp.config('fsautocomplete', {
         capabilities = caps,
         on_attach = vtext,
         filetypes = { "fsharp" },
-        root_dir = cnf.util.root_pattern("*.fsproj", "*.sln", ".git"),
+        root_dir = root_pattern("*.fsproj", "*.sln", ".git"),
       })
 
-      cnf.omnisharp.setup({
+      vim.lsp.enable('omnisharp')
+      vim.lsp.config('omnisharp', {
         cmd = { "OmniSharp", "-z", "--hostPID", tostring(vim.fn.getpid()), "Dotnet:enablePackageRestore=false", "--encoding", "utf-8", "--languageserver" },
         capabilities = caps,
         on_attach = vtext,
         filetypes = { "cs", "vb" },
-        root_dir = cnf.util.root_pattern("*.csproj", "*.sln", ".git"),
+        root_dir = root_pattern("*.csproj", "*.sln", ".git"),
       })
-
-      local util = cnf.util
 
       local function fallback_root_dir(fname)
         local root_markers = { ".git", "pom.xml", "src" }
 
         for _, marker in ipairs(root_markers) do
-          local root = util.root_pattern(marker)(fname)
+          local root = root_pattern(marker)(fname)
           if root then
             return root
           end
@@ -133,7 +155,8 @@ return {
       end
 
       local workspace_dir = vim.fn.stdpath("data") .. "/jdtls-workspaces/" .. vim.fn.fnamemodify(fallback_root_dir(vim.fn.expand("%:p")), ":t")
-      cnf.jdtls.setup({
+      vim.lsp.enable('jdtls')
+      vim.lsp.config('jdtls', {
         capabilities = caps,
         on_attach = vtext,
         cmd = { "jdtls" },
