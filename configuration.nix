@@ -43,8 +43,18 @@ in
   services.xserver.enable = true;
 
   # SDDM for login
-  services.displayManager.sddm.enable = true;
-  services.displayManager.sddm.theme = "sddm-theme-dialog";
+  services.displayManager.sddm = {
+    wayland.enable = true;
+    enable = true;
+    package = pkgs.kdePackages.sddm;
+    theme = "sddm-astronaut-theme";
+    extraPackages = with pkgs; [
+      kdePackages.qtsvg
+      kdePackages.qtmultimedia
+      kdePackages.qtvirtualkeyboard
+      sddm-astronaut
+    ];
+  };
   # services.desktopManager.plasma6.enable = true;
 
   # Configure keymap in X11
@@ -305,12 +315,7 @@ in
     ffmpeg
     jdk24
 
-    # SDDM theme stuff
-    qt5.qtgraphicaleffects
-    qt5.qtquickcontrols
-    qt5.qtquickcontrols2
-    (callPackage ./sddm-theme-dialog.nix {}).sddm-theme-dialog
-
+    sddm-astronaut
     (callPackage ./claude-code/claude-code.nix {})
     mpvpaper
   ];
