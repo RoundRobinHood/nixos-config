@@ -226,6 +226,12 @@ in
           "exec-once" = [
             "waybar"
             "mako"
+            "${pkgs.writeShellScript "start-wallpaper" ''
+              VID_DIR="$HOME/wallpaper-videos"
+              if [ -d "$VID_DIR" ]; then
+                mpvpaper -pf -o "no-audio loop-playlist shuffle" '*' "$VID_DIR/"
+              fi
+                ''}"
           ];
 
           input = {
@@ -306,6 +312,7 @@ in
     (callPackage ./sddm-theme-dialog.nix {}).sddm-theme-dialog
 
     (callPackage ./claude-code/claude-code.nix {})
+    mpvpaper
   ];
 
   fonts.packages = with pkgs; [
