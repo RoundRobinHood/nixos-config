@@ -72,6 +72,8 @@ in
     #media-session.enable = true;
   };
 
+  services.flatpak.enable = true;
+
   security.pam.services.sddm.enableKwallet = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -110,6 +112,7 @@ in
 
       gcc
 
+      jdt-language-server
       fsautocomplete
       omnisharp-roslyn
 
@@ -120,7 +123,7 @@ in
       waybar
       mako
 
-      go_1_23
+      go_1_24
       nodejs_24
       python314
 
@@ -294,6 +297,7 @@ in
   environment.systemPackages = with pkgs; [
     kitty
     ffmpeg
+    jdk24
 
     # SDDM theme stuff
     qt5.qtgraphicaleffects

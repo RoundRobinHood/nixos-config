@@ -128,7 +128,6 @@ return {
         capabilities = caps,
         on_attach = vtext,
         filetypes = { "fsharp" },
-        root_dir = root_pattern("*.fsproj", "*.sln", ".git"),
       })
 
       vim.lsp.enable('omnisharp')
@@ -137,49 +136,7 @@ return {
         capabilities = caps,
         on_attach = vtext,
         filetypes = { "cs", "vb" },
-        root_dir = root_pattern("*.csproj", "*.sln", ".git"),
       })
-
-      local function fallback_root_dir(fname)
-        local root_markers = { ".git", "pom.xml", "src" }
-
-        for _, marker in ipairs(root_markers) do
-          local root = root_pattern(marker)(fname)
-          if root then
-            return root
-          end
-        end
-
-        -- fallback to current working directory if nothing matches
-        return vim.fn.getcwd()
-      end
-
-      local workspace_dir = vim.fn.stdpath("data") .. "/jdtls-workspaces/" .. vim.fn.fnamemodify(fallback_root_dir(vim.fn.expand("%:p")), ":t")
-      vim.lsp.enable('jdtls')
-      vim.lsp.config('jdtls', {
-        capabilities = caps,
-        on_attach = vtext,
-        cmd = { "jdtls" },
-        root_dir = fallback_root_dir,
-        init_options = {
-          workspace = workspace_dir,
-          -- Optional: you can make this project-specific if you want
-        },
-        settings = {
-          java = {
-            project = {
-              referencedLibraries = {
-                -- Use the full absolute path to the servlet JAR
-                vim.fn.expand("$HOME/.local/apache-tomcat-10.1.43/lib/servlet-api.jar")
-              },
-              sourcePaths = {
-                "src",
-              },
-            }
-          }
-        },
-      })
-
 
     end,
   },
