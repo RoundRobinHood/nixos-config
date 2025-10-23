@@ -105,6 +105,13 @@ return {
         }
       })
 
+      vim.lsp.enable('nil_ls')
+      vim.lsp.config('nil_ls', {
+        capabilities = caps,
+        on_attach = vtext,
+        filetypes = { "nix" },
+      })
+
       local function root_pattern(...)
         local patterns = { ... }
 

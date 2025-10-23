@@ -15,6 +15,8 @@ in
       <home-manager/nixos>
     ];
 
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -84,6 +86,11 @@ in
 
   services.flatpak.enable = true;
 
+  services.avahi = {
+    enable = true;
+    nssmdns4 = true;
+  };
+
   security.pam.services.sddm.enableKwallet = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -144,6 +151,8 @@ in
       nnn
       mpv
       tree
+
+      (pkgs.callPackage ./cogniflight-socket.nix { })
     ];
 
     home.pointerCursor = {
@@ -270,11 +279,25 @@ in
       extraPackages = with pkgs; [
         wl-clipboard
         dotnetCorePackages.sdk_9_0
+        nil
       ];
     };
 
     programs.tmux.enable = true;
-    programs.bash.enable = true;
+    programs.bash = {
+      enable = true;
+      bashrcExtra = ''
+        parse_git_branch() {
+          local output=$(git branch --show-current 2>/dev/null)
+          if [[ -n "$output" ]]; then
+            echo -n " $output"
+            git diff --quiet || echo -n "*"
+            echo -n " "
+          fi
+        }
+        export PS1="\[\e[1;32m\][\u@\h:\w]\[\e[33m\]\$(parse_git_branch)\[\e[1;32m\]$ \[\e[0m\]"
+      '';
+    };
 
     home.file.".config/nvim/init.lua".source = ./dotfiles/nvim/init.lua;
     home.file.".config/nvim/lua".source = ./dotfiles/nvim/lua;
@@ -318,6 +341,7 @@ in
     sddm-astronaut
     (callPackage ./claude-code/claude-code.nix {})
     mpvpaper
+    avahi
   ];
 
   fonts.packages = with pkgs; [
