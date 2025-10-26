@@ -7,6 +7,10 @@
 let
   personal = import ./secrets/personal.nix;
   lib = pkgs.lib;
+  nixvim = import (builtins.fetchGit {
+    url = "https://github.com/nix-community/nixvim";
+    ref = "nixos-25.05";
+  });
 in
 {
   imports =
@@ -114,6 +118,8 @@ in
 
   home-manager.users.rrh = { pkgs, ... }: {
     nixpkgs.config.allowUnfree = true;
+
+    imports = [ nixvim.homeModules.nixvim ];
 
     home.packages = with pkgs; [
       dotnetCorePackages.sdk_9_0
@@ -271,17 +277,91 @@ in
       ])}";
     };
 
-    programs.neovim = {
+    programs.nixvim = {
       enable = true;
-      defaultEditor = true;
-      viAlias = true;
-      vimAlias = true;
-      extraPackages = with pkgs; [
-        wl-clipboard
-        dotnetCorePackages.sdk_9_0
-        nil
-      ];
+
+      colorschemes.tokyonight.enable = true;
+
+      plugins = {
+        lualine.enable = true;
+        treesitter.enable = true;
+        telescope.enable = true;
+        web-devicons.enable = true;
+
+        cmp = {
+          enable = true;
+          settings = {
+            mapping = {
+              "<CR>" = "cmp.mapping.confirm({ select = true })";
+              "<C-Space>" = "cmp.mapping.complete()";
+              "<Tab>" = ''
+                cmp.mapping(function(fallback)
+                  if cmp.visible() then
+                    cmp.select_next_item()
+                  else
+                    fallback()
+                  end
+                end, {"i", "s"})
+                '';
+              "<S-Tab>" = ''
+                cmp.mapping(function(fallback)
+                  if cmp.visible() then
+                    cmp.select_prev_item()
+                  else
+                    fallback()
+                  end
+                end, {"i", "s"})
+                '';
+            };
+            sources = [
+            { name = "nvim_lsp"; }
+            { name = "buffer"; }
+            { name = "path"; }
+            ];
+          };
+        };
+
+        cmp-buffer.enable = true;
+        cmp-path.enable = true;
+        cmp-nvim-lsp.enable = true;
+
+        lsp = {
+          enable = true;
+
+          servers = {
+            gopls.enable = true;
+            pyright.enable = true;
+            bashls.enable = true;
+          };
+        };
+
+      };
+
+      opts = {
+        number = true;
+        relativenumber = true;
+        expandtab = true;
+        shiftwidth = 2;
+      };
+
+      extraConfigLua = ''
+        vim.g.mapleader = " "
+        vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
+        '';
     };
+
+
+    # programs.neovim = {
+      # enable = true;
+      # defaultEditor = true;
+      # viAlias = true;
+      # vimAlias = true;
+      # extraPackages = with pkgs; [
+        # wl-clipboard
+        # dotnetCorePackages.sdk_9_0
+        # nil
+      # ];
+    # };
 
     programs.tmux.enable = true;
     programs.bash = {
@@ -299,8 +379,8 @@ in
       '';
     };
 
-    home.file.".config/nvim/init.lua".source = ./dotfiles/nvim/init.lua;
-    home.file.".config/nvim/lua".source = ./dotfiles/nvim/lua;
+    # home.file.".config/nvim/init.lua".source = ./dotfiles/nvim/init.lua;
+    # home.file.".config/nvim/lua".source = ./dotfiles/nvim/lua;
     home.file.".config/waybar".source = ./dotfiles/waybar;
     home.file.".config/mako".source = ./dotfiles/mako;
     home.file.".config/tmux".source = ./dotfiles/tmux;
