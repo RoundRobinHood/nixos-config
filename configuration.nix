@@ -332,6 +332,8 @@ in
             gopls.enable = true;
             pyright.enable = true;
             bashls.enable = true;
+            ts_ls.enable = true;
+            jdtls.enable = true;
           };
         };
       };
