@@ -334,6 +334,11 @@ in
             bashls.enable = true;
             ts_ls.enable = true;
             jdtls.enable = true;
+
+            nil_ls.enable = true;
+
+            omnisharp.enable = true;
+            fsautocomplete.enable = true;
           };
         };
       };
