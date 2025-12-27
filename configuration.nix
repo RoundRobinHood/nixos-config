@@ -122,7 +122,7 @@ in
     imports = [ nixvim.homeModules.nixvim ];
 
     home.packages = with pkgs; [
-      dotnetCorePackages.sdk_9_0
+      dotnet-sdk_10
       libreoffice
       spotify
       jetbrains-toolbox
@@ -146,6 +146,8 @@ in
       waybar
       mako
 
+      go-swag
+      jq
       go_1_24
       nodejs_24
       python314
@@ -158,7 +160,8 @@ in
       mpv
       tree
 
-      (pkgs.callPackage ./cogniflight-socket.nix { })
+      xonotic
+      codex
     ];
 
     home.pointerCursor = {
@@ -440,6 +443,7 @@ in
   # Install firefox.
   programs.firefox.enable = true;
 
+  programs.steam.enable = true;
 
   programs.hyprland.enable = true;
   # List packages installed in system profile. To search, run:
