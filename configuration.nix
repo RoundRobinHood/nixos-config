@@ -5,6 +5,7 @@
 { config, pkgs, ... }:
 
 let
+  unstable = import <nixos-unstable> { config = config.nixpkgs.config; };
   personal = import ./secrets/personal.nix;
   lib = pkgs.lib;
   nixvim = import (builtins.fetchGit {
@@ -161,7 +162,6 @@ in
       tree
 
       xonotic
-      codex
     ];
 
     home.pointerCursor = {
@@ -452,6 +452,7 @@ in
     kitty
     ffmpeg
     jdk24
+    unstable.codex
 
     sddm-astronaut
     (callPackage ./claude-code/claude-code.nix {})
