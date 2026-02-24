@@ -5,7 +5,6 @@
 { config, pkgs, ... }:
 
 let
-  unstable = import <nixos-unstable> { config = config.nixpkgs.config; };
   personal = import ./secrets/personal.nix;
   lib = pkgs.lib;
   nixvim = import (builtins.fetchGit {
@@ -410,6 +409,8 @@ in
           fi
         }
         export PS1="\[\e[1;32m\][\u@\h:\w]\[\e[33m\]\$(parse_git_branch)\[\e[1;32m\]$ \[\e[0m\]"
+
+        eval "$(direnv hook bash)"
       '';
     };
 
@@ -452,12 +453,13 @@ in
     kitty
     ffmpeg
     jdk24
-    unstable.codex
+    codex
 
     sddm-astronaut
     (callPackage ./claude-code/claude-code.nix {})
     mpvpaper
     avahi
+    direnv
   ];
 
   fonts.packages = with pkgs; [
