@@ -88,6 +88,11 @@ in
     #media-session.enable = true;
   };
 
+  xdg.portal = {
+    enable = true;
+    extraPortals = [ pkgs.xdg-desktop-portal-gtk ];
+  };
+
   services.flatpak.enable = true;
 
   services.avahi = {
@@ -95,7 +100,8 @@ in
     nssmdns4 = true;
   };
 
-  security.pam.services.sddm.enableKwallet = true;
+  services.gnome.gnome-keyring.enable = true;
+  security.pam.services.sddm.enableGnomeKeyring = true;
 
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
@@ -107,8 +113,7 @@ in
       isNormalUser = true;
       description = personal.localUser.description;
       extraGroups = [ "networkmanager" "wheel" ];
-      packages = with pkgs; [
-        kdePackages.kate
+      packages = [
       #  thunderbird
       ];
     };
@@ -251,6 +256,8 @@ in
           };
 
           "exec-once" = [
+            "systemctl --user start hyprpolkitagent"
+            "nm-applet --indicator"
             "waybar"
             "mako"
             "${pkgs.writeShellScript "start-wallpaper" ''
@@ -443,6 +450,7 @@ in
 
   # Install firefox.
   programs.firefox.enable = true;
+  programs.dconf.enable = true;
 
   programs.steam.enable = true;
 
@@ -454,6 +462,10 @@ in
     ffmpeg
     jdk24
     codex
+
+    libsecret
+    hyprpolkitagent
+    networkmanagerapplet
 
     sddm-astronaut
     (callPackage ./claude-code/claude-code.nix {})
