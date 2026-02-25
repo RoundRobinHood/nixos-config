@@ -9,7 +9,7 @@ let
   lib = pkgs.lib;
   nixvim = import (builtins.fetchGit {
     url = "https://github.com/nix-community/nixvim";
-    ref = "nixos-25.05";
+    ref = "nixos-25.11";
   });
 in
 {
@@ -423,17 +423,19 @@ in
 
     programs.git = {
       enable = true;
-      userName = personal.git.userName;
-      userEmail = personal.git.userEmail;
+      settings = {
+        user = {
+          name = personal.git.userName;
+          email = personal.git.userEmail;
+        };
 
-      extraConfig = {
         init.defaultBranch = "main";
         url."git@github.com:".insteadOf = "https://github.com/";
         core.sshCommand = "ssh -i ~/.ssh/id_ed25519";
       };
     };
 
-    home.stateVersion = "25.05";
+    home.stateVersion = "25.11";
   };
 
   virtualisation.docker = {
@@ -454,7 +456,7 @@ in
   environment.systemPackages = with pkgs; [
     kitty
     ffmpeg
-    jdk24
+    jdk25
     codex
 
     libsecret
@@ -462,7 +464,7 @@ in
     networkmanagerapplet
 
     sddm-astronaut
-    (callPackage ./claude-code/claude-code.nix {})
+    claude-code
     avahi
     direnv
   ];
@@ -496,6 +498,6 @@ in
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "25.05"; # Did you read the comment?
+  system.stateVersion = "25.11"; # Did you read the comment?
 
 }
