@@ -290,6 +290,7 @@ in
         treesitter.enable = true;
         telescope.enable = true;
         web-devicons.enable = true;
+        tmux-navigator.enable = true;
 
         cmp = {
           enable = true;
