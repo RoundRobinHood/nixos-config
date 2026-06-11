@@ -30,6 +30,10 @@ in
 
   networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  networking.extraHosts = ''
+    127.0.0.1 console.localhost
+    ::1 console.localhost
+  '';
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -166,6 +170,9 @@ in
       tree
 
       xonotic
+
+      overmind
+      miktex
     ];
 
     home.pointerCursor = {
@@ -468,6 +475,9 @@ in
     claude-code
     avahi
     direnv
+
+    prismlauncher
+    lutris
   ];
 
   fonts.packages = with pkgs; [
